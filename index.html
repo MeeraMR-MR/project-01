@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SUMMER DRINK</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin:0;
+            font-family:'Poppins', sans-serif;
+            background:url('https://images.unsplash.com/photo-1497534446932-c925b458314e') no-repeat center/cover;
+        }
+
+        .overlay {
+            background:rgba(0,0,0,0.6);
+            min-height:100vh;
+            text-align:center;
+            color:white;
+        }
+
+        .card {
+            background:white;
+            width:330px;
+            margin:auto;
+            padding:20px;
+            border-radius:15px;
+            margin-top:60px;
+            color:black;
+            box-shadow:0 0 15px rgba(0,0,0,0.5);
+        }
+
+        input, select, textarea {
+            width:90%;
+            padding:10px;
+            margin:8px 0;
+            border-radius:5px;
+            border:1px solid #ccc;
+        }
+
+        button {
+            padding:10px 20px;
+            background:#6B8E23;
+            color:white;
+            border:none;
+            border-radius:5px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+
+        button:hover {
+            background:#556B2F;
+        }
+
+        .hidden {
+            display:none;
+        }
+
+        #trackingBox {
+            width:300px;
+            margin:auto;
+            height:20px;
+            background:#ddd;
+            border-radius:10px;
+            overflow:hidden;
+        }
+
+        #progress {
+            height:100%;
+            width:0%;
+            background:#6B8E23;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+<!-- LOGIN -->
+<div id="loginPage" style="padding-top:100px;">
+    <div class="card">
+        <h2 style="color:#6B8E23;">Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+</div>
+
+<!-- COVER -->
+<div id="coverPage" class="hidden">
+    <h1 style="margin-top:100px;">🍹 SUMMER DRINK 🍹</h1>
+    <p>Stay Cool 🌿 | Drink Fresh 🍋</p>
+    <button onclick="goToOrder()">Order Now</button>
+</div>
+
+<!-- ORDER -->
+<div id="orderPage" class="hidden">
+    <div class="card">
+        <h2 style="color:#6B8E23;">🛒 Order Juice</h2>
+
+        <form onsubmit="calculateBill(event)">
+            <input type="text" id="name" placeholder="Your Name" required>
+
+            <select id="place" required>
+                <option value="">Select Place</option>
+                <option>🏠 Home</option>
+                <option>🏫 School</option>
+                <option>🎓 College</option>
+                <option>🏪 Shop</option>
+            </select>
+
+            <select id="juice" required>
+                <option value="50">🥭 Mango - ₹50</option>
+                <option value="40">🍉 Watermelon - ₹40</option>
+                <option value="60">🍓 Strawberry - ₹60</option>
+                <option value="50">🍍 Pineapple - ₹50</option>
+                <option value="70">🍌 Banana - ₹70</option>
+                <option value="65">🍈 Litchi - ₹65</option>
+                <option value="75">🫐 Berry - ₹75</option>
+            </select>
+
+            <input type="number" id="qty" placeholder="Quantity" min="1" required>
+
+            <textarea placeholder="Address" required></textarea>
+
+            <button type="submit">Calculate Bill</button>
+        </form>
+
+        <p id="bill"></p>
+    </div>
+</div>
+
+<!-- PAYMENT -->
+<div id="paymentPage" class="hidden">
+    <div class="card">
+        <h2 style="color:#6B8E23;">💳 Payment</h2>
+        <p id="finalBill"></p>
+        <button onclick="payNow()">Pay Now</button>
+    </div>
+</div>
+
+<!-- TRACKING -->
+<div id="trackingPage" class="hidden">
+    <h2 style="margin-top:100px;">🚚 Delivery Tracking</h2>
+    <p id="trackingText">Preparing your order...</p>
+
+    <div id="trackingBox">
+        <div id="progress"></div>
+    </div>
+</div>
+
+</div>
+
+<script>
+let totalAmount = 0;
+let userPlace = "";
+
+// LOGIN
+function login() {
+    let u = document.getElementById("username").value;
+    let p = document.getElementById("password").value;
+
+    if(u === "" || p === "") {
+        alert("Enter username & password");
+    } else {
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("coverPage").classList.remove("hidden");
+    }
+}
+
+// GO TO ORDER
+function goToOrder() {
+    document.getElementById("coverPage").classList.add("hidden");
+    document.getElementById("orderPage").classList.remove("hidden");
+}
+
+// BILL
+function calculateBill(event) {
+    event.preventDefault();
+
+    let price = parseInt(document.getElementById("juice").value);
+    let quantity = parseInt(document.getElementById("qty").value);
+
+    userPlace = document.getElementById("place").value;
+
+    totalAmount = price * quantity;
+
+    document.getElementById("bill").innerHTML = "Total Bill: ₹" + totalAmount;
+
+    setTimeout(() => {
+        document.getElementById("orderPage").classList.add("hidden");
+        document.getElementById("paymentPage").classList.remove("hidden");
+        document.getElementById("finalBill").innerHTML = "Pay ₹" + totalAmount;
+    }, 1500);
+}
+
+// PAYMENT
+function payNow() {
+    alert("✅ Payment Successful!");
+
+    document.getElementById("paymentPage").classList.add("hidden");
+    document.getElementById("trackingPage").classList.remove("hidden");
+
+    startTracking();
+}
+
+// TRACKING + THANK YOU
+function startTracking() {
+    let progress = document.getElementById("progress");
+    let text = document.getElementById("trackingText");
+
+    let steps = [
+        "🍹 Preparing your juice...",
+        "📦 Packing your order...",
+        "🚚 Out for delivery...",
+        "📍 Reached near your " + userPlace + "...",
+        "🚶 Delivery partner is at your gate!",
+        "🥤 Please come and collect your juice!"
+    ];
+
+    let width = 0;
+    let i = 0;
+
+    let interval = setInterval(() => {
+        if(width >= 100) {
+            clearInterval(interval);
+
+            alert("🎉 Delivered Successfully!");
+
+            setTimeout(() => {
+                alert("🙏 THANK YOU FOR YOUR ORDER!");
+            }, 1000);
+
+        } else {
+            width += 20;
+            progress.style.width = width + "%";
+            text.innerHTML = steps[i];
+            i++;
+        }
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
